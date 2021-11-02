@@ -1,0 +1,11 @@
+- name: deleting instance {{ item }}
+  synthesio.ovh.public_cloud_instance_delete:
+    name: "{{ item }}"
+    endpoint: "{{ ovh_endpoint }}"
+    application_key: "{{ ovh_app_key }}"
+    application_secret: "{{ ovh_app_secret }}"
+    consumer_key: "{{ ovh_consumer_key }}"
+    service_name: "{{ ovh_service_name }}"
+    region: "{{ ovh_region }}"
+  delegate_to: localhost
+ 

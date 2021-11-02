@@ -1,0 +1,3 @@
+ovh_instances:
+  - ansible00
+  - ansible01

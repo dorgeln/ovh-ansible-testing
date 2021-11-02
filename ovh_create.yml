@@ -1,4 +1,4 @@
-- name: run installation
+- name: create instance {{ item }}
   synthesio.ovh.public_cloud_instance:
     name: "{{ item }}"
     endpoint: "{{ ovh_endpoint }}"
@@ -20,15 +20,7 @@
   debug:
     var: instance_metadata
 
-- name: Debug instance_ipAddresses
-  debug:
-    var: instance_metadata["ipAddresses"]
-
-- name: Debug instance_ip
-  debug:
-    var: instance_metadata["ipAddresses"][0]["ip"]
-
-- name: Add host
+- name: Add {{ item }} to hosts
   add_host:
     name: "{{ item }}"
     groups: ovh_instances

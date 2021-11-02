@@ -2,7 +2,10 @@
 - hosts: localhost
 
   tasks:
-    - name: create ovh_create
+    - name: ovh_create
       include_tasks: ovh_create.yml
-      with_items:
-        - ansible00
+      with_items: "{{ ovh_instances }}"
+
+    - name: ovh_delete
+      include_tasks: ovh_delete.yml
+      with_items: "{{ ovh_instances }}"
