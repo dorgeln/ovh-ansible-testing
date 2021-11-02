@@ -1,0 +1,8 @@
+---
+- hosts: localhost
+
+  tasks:
+    - name: create ovh_create
+      include_tasks: ovh_create.yml
+      with_items:
+        - ansible00

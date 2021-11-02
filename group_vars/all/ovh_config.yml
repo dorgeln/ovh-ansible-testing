@@ -1,0 +1,4 @@
+ovh_endpoint: "ovh-eu"
+ovh_region: "DE1"
+ovh_image_id: "e1896f5f-230b-477e-925d-a7f620c363ac"
+ovh_flavor_id: "3be7c73a-735a-4ee1-b8d4-83feb080109d"
