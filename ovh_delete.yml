@@ -1,4 +1,4 @@
-- name: deleting instance {{ item }}
+- name: Deleting instance {{ item }}
   synthesio.ovh.public_cloud_instance_delete:
     name: "{{ item }}"
     endpoint: "{{ ovh_endpoint }}"

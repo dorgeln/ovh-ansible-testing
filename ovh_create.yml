@@ -1,4 +1,4 @@
-- name: create instance {{ item }}
+- name: Create instance {{ item }}
   synthesio.ovh.public_cloud_instance:
     name: "{{ item }}"
     endpoint: "{{ ovh_endpoint }}"
@@ -14,11 +14,11 @@
   register: instance_metadata
   retries: 30
   delay: 10
-  until: instance_metadata["ipAddresses"]
+  until: instance_metadata.ipAddresses | default(None)
  
-- name: Debug instance_metadata
+- name: Instance {{ item }} IP
   debug:
-    var: instance_metadata
+    var: instance_metadata.ipAddresses.0.ip
 
 - name: Add {{ item }} to hosts
   add_host:
@@ -26,4 +26,4 @@
     groups: ovh_instances
     host_name: "{{ item }}"
     ansible_host: "{{ instance_metadata.ipAddresses.0.ip }}"
-    ansible_user: "ubuntu"
+    ansible_user: "{{ ovh_user }}"

@@ -1,11 +1,77 @@
 ---
 - hosts: localhost
-
   tasks:
     - name: ovh_create
       include_tasks: ovh_create.yml
       with_items: "{{ ovh_instances }}"
 
-    - name: ovh_delete
-      include_tasks: ovh_delete.yml
-      with_items: "{{ ovh_instances }}"
+- hosts: ovh_instances
+  gather_facts: no
+  tasks:
+    - name: Wait for connection
+      wait_for_connection:
+        delay: 10
+        timeout: 300
+
+- hosts: ovh_instances
+  become: yes
+  roles:
+      - geerlingguy.docker
+
+- hosts: ovh_instances
+  tasks:
+  - name: Add Ansible user to docker group
+    become: yes
+    user:
+      name: "{{ansible_user}}"
+      groups: docker
+  - name: reset ssh connection
+    meta: reset_connection
+
+- hosts: ovh_instances
+  become: yes
+  roles:
+      - maresb.micromamba
+  vars:
+    dest: "{{ mamba_exe }}"
+
+- hosts: ovh_instances
+  roles:
+      - maresb.micromamba
+  vars:
+    dest: "{{ mamba_exe }}"
+    root_prefix: "{{ mamba_root_prefix }}"
+    root_prefix_condarc:
+      channels:
+        - conda-forge
+    packages:
+      - python
+      - gh
+      - awscli
+  tasks:
+
+  - name: Update .bashrc
+    template:
+      src: templates/bashrc.j2
+      dest: ~/.bashrc
+
+  - name: reset ssh connection
+    meta: reset_connection
+
+  - name: Copy build_feedstock
+    template:
+      src: templates/build_feedstock.j2
+      dest: ~/build_feedstock.sh
+      mode: u=rwx,g=rx,o=rx
+
+  - name: Run build_feedstock
+    shell: ~/build_feedstock.sh
+    environment:
+      GH_TOKEN: "{{ github_token }}"
+      GH_REPO: "conda-forge/tensorflow-feedstock"
+
+
+
+#  - name: ovh_delete
+#    include_tasks: ovh_delete.yml
+#    with_items: "{{ ovh_instances }}"
